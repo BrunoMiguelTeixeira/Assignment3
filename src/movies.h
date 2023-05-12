@@ -4,7 +4,7 @@
 #ifndef MOVIES_H
 #define MOVIES_H
 
-extern volatile int up_down, select, return_credit, button_touch, credit;
+extern volatile int up_down, select, return_credit, credit;
 
 /**
  * \brief State machine's states enum
@@ -23,8 +23,8 @@ typedef enum
  *	State machine diagram:
  *  \dot
  *     	digraph State_Machine{
- *	   	node [shape=oval, fontname=Helvetica, fontsize=10];
-		edge [shape=circle, fontname=Helvetica, fontsize=10];
+ *	   	node [shape=oval, fontname=Helvetica, fontsize=12];
+		edge [shape=circle, fontname=Helvetica, fontsize=8];
 
  *	   	n_cre [label="NULL_CREDIT"];
  *	   	add_cre [ label="ADD CREDIT"];
@@ -33,10 +33,9 @@ typedef enum
  		subgraph cluster{
 			style = rounded
 	   		mov [label="MOVIE"];
-	   		sess [labe="SESSION"];
+	   		sess[label="SESSION"];
 	   		tic [label="TICKET"];
-			node [shape=circle, fontname=Helvetica, fontsize=10];
-			his [label="H"];
+			his [shape="circle" label="H"];
 			def[shape="point" label=" "]
 
 			def -> mov [ arrowhead="vee" label = ""];
@@ -61,8 +60,8 @@ void state_machine(void);
 
 /**
  * \brief Function responsible for print menu
- * \param char[][20] menu array of menu options
- * \param int len_menu number of menu options
+ * \param menu[][20] array of menu options
+ * \param len_menu number of menu options
 */
 void update_menu(char menu[][20], int len_menu);
 
