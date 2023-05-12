@@ -37,6 +37,7 @@
 #include <zephyr/devicetree.h>		/* for DT_NODELABEL() */
 #include <zephyr/drivers/gpio.h>    /* for GPIO api*/
 #include <zephyr/sys/printk.h>      /* for printk()*/
+#include "movies.h"
 
 /* Use a "big" sleep time to reduce CPU load (button detection int activated, not polled) */
 #define SLEEP_TIME_MS   30				/*60 hz*/ 
@@ -59,7 +60,6 @@ static struct gpio_callback button_cb_data;
 
 /* Define a callback function. It is like an ISR (and runs in the cotext of an ISR) */
 /* that is called when the button is pressed */
-volatile int up,down,select,return_credit,button_touch=0;
 
 void button_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t pins)
 {
@@ -73,20 +73,36 @@ void button_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t
 		if(BIT(buttons_pins[i]) & pins) {
 			switch(i+1){
 				case 1: /* up */
-					up=-1;
+					up_down = -1;
 					printk("up \n");
 					break;
 				case 2:/* select */
-					select=1;
+					select = 1;
 					printk("select\n");
 					break;
 				case 3:/* down */
-					down=1;
+					up_down = 1;
 					printk("down\n");
 					break;
 				case 4:/* return_credit */
-					return_credit=1;
+					return_credit = 1;
 					printk("return_credit\n");
+					break;
+				case 5: /* 1 euro */
+					credit += 1;
+					printk("1 \n");
+					break;
+				case 6:/* 2 euros */
+					credit += 2;
+					printk("2\n");
+					break;
+				case 7:/* 5 euros */
+					credit += 5;
+					printk("5\n");
+					break;
+				case 8:/* 10 euros */
+					credit += 10;
+					printk("10\n");
 					break;
 				default:
 					break;
@@ -95,27 +111,7 @@ void button_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t
 	} 
 }
 
-void update_menu(int a,char b[][20],int c){
-	int i;
-	for (i = 0; i <= c; ++i)
-	{
-		if(i==a){
-			printf("-->");
-		}
-		else{
-			printf("   ");
-		}
-		printf("%s\n",b[i]);
-	}
-	/*printk("\n\n\n\n\n\n\n\n\n");*/
-}
-void reset_buttons(void){
-	up=0;
-	down=0;
-	select=0;
-	return_credit=0;
-	button_touch=0;
-}
+
 /* 
  * The main function
  */
@@ -179,72 +175,11 @@ void main(void)
 	/* 
  	 * The main loop
  	 */ 
-	typedef enum{
-		NULL_CREDIT = 0,
-		CREDIT,
-		MOVIE,
-		SESSION,
-		TICKET
-	}state_t;
-	int pointer=0;
-	state_t current_state=NULL_CREDIT;
-	state_t next_state=MOVIE;
-	char menu_NULL_CREDIT[20]={"Insert credit:"};
-	char menu_MOVIE[3][20]={"Movie A","Movie B"};
-	char menu_SESSION[1][20]={"temp"};
-	(void)update_menu(pointer,menu_MOVIE,2);
-	while (1) {
-		switch(next_state){
-			case NULL_CREDIT:
-				break;
-			case CREDIT:
-				printk("CREDITSZ");
-				break;
-			case MOVIE:
-				if(button_touch==1){
-					if(up==-1 || down==1){
-						pointer=(pointer+up+down)%2;
-						printk("Movies\n");
-						(void)update_menu(pointer,menu_MOVIE,2);
-						(void)reset_buttons();
-					}
-					else if(select==1){
-						if(pointer==0){
-							current_state=next_state;
-							next_state=SESSION;
-							(void)update_menu(pointer,menu_SESSION,1);
-							(void)reset_buttons();
-						}
-						else if(pointer==1){
-							pointer=0;
-							current_state=next_state;
-							next_state=SESSION;
-							(void)update_menu(pointer,menu_SESSION,1);
-							(void)reset_buttons();
-						}
-						else if(return_credit==1){
-							pointer=0;
-							current_state=next_state;
-							next_state=CREDIT;
-							(void)reset_buttons();
-						}
-						else{
-							printf("ERROR ENTERING NEXT STATE DUE TO POINTER VALUE\n");
-						}
-					}
-				}
-				break;
-			case SESSION:
-				if(button_touch==1){
-					printk("Hello!\n");
-					(void)reset_buttons();
-				}
-				break;
-			case TICKET:
-				break;
-			default:
-				break;
-		}
+	
+	while (1) 
+	{
+		state_machine();
+		
 		/* Just sleep. Led on/off is done by the int callback */
 		k_msleep(SLEEP_TIME_MS);
 	}
