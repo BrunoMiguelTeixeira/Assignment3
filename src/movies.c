@@ -1,5 +1,6 @@
 
 #include "movies.h"
+#include <zephyr/sys/printk.h>      /* for printk()*/
 
 volatile int up_down = 0, select = 0, return_credit = 0, button_touch = 0, credit = 0;
 

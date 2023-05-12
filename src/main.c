@@ -89,19 +89,19 @@ void button_pressed(const struct device *dev, struct gpio_callback *cb, uint32_t
 					printk("return_credit\n");
 					break;
 				case 5: /* 1 euro */
-					credit += 1;
+					credit = 1;
 					printk("1 \n");
 					break;
 				case 6:/* 2 euros */
-					credit += 2;
+					credit = 2;
 					printk("2\n");
 					break;
 				case 7:/* 5 euros */
-					credit += 5;
+					credit = 5;
 					printk("5\n");
 					break;
 				case 8:/* 10 euros */
-					credit += 10;
+					credit = 10;
 					printk("10\n");
 					break;
 				default:
