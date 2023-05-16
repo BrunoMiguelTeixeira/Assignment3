@@ -18,6 +18,7 @@ typedef enum
 	TICKET
 } state_t;
 
+
 /**
  *  \brief State machine function
  *	State machine diagram:
@@ -26,7 +27,7 @@ typedef enum
  *	   	node [shape=oval, fontname=Helvetica, fontsize=12];
 		edge [shape=circle, fontname=Helvetica, fontsize=8];
 
- *	   	n_cre [label="NULL_CREDIT"];
+ *	   	
  *	   	add_cre [ label="ADD CREDIT"];
 		ret[shape="point" label=" "]
 
@@ -35,6 +36,7 @@ typedef enum
 	   		mov [label="MOVIE"];
 	   		sess[label="SESSION"];
 	   		tic [label="TICKET"];
+	   		group [label="GROUP"];
 			his [shape="circle" label="H"];
 			def[shape="point" label=" "]
 
@@ -44,18 +46,23 @@ typedef enum
 			mov -> mov [ arrowhead="vee" label = "Down"]
 			sess -> sess [ arrowhead="vee" label = "Up"]
 			mov -> mov [ arrowhead="vee" label = "Up"]
-			sess -> tic [ arrowhead="vee" label = "Select"]
+			sess -> group [ arrowhead="vee" label = "Select"]
+			group -> group [ arrowhead="vee" label = "Up"]
+			group -> group [ arrowhead="vee" label = "Down"]
+			group-> tic [ arrowhead="vee" label = "Select"]
 		}
-		ret -> n_cre [arrowhead="vee" label = "Return"];
+		ret -> add_cre [arrowhead="vee" label = "Return"];
 		mov -> add_cre [arrowhead="vee" label = "Credit"];
 		sess -> add_cre [arrowhead="vee" label = "Credit"];
+		group -> add_cre [arrowhead="vee" label = "Credit"];
 		tic -> add_cre [ arrowhead="vee" label = "X"]
-  	   	n_cre -> add_cre [arrowhead="vee" label = "Credit"];
 		add_cre -> his[label = "Select"]
  *		
  *   }
  *  \enddot
  */
+
+
 void state_machine(void);
 
 /**
