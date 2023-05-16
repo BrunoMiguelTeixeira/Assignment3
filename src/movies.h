@@ -11,10 +11,10 @@ extern volatile int up_down, select, return_credit, credit;
  */
 typedef enum
 {
-	NULL_CREDIT = 0,
-	CREDIT,
+	CREDIT = 0,
 	MOVIE,
 	SESSION,
+	GROUP,
 	TICKET
 } state_t;
 
