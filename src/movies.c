@@ -136,7 +136,7 @@ void state_machine(void)
         }
         else
         {
-            next_state = MOVIE;
+            next_state = current_state;
         }
         break;
     case SESSION:
@@ -217,6 +217,7 @@ void state_machine(void)
             }
             printk("Number of participants: %d\n",view_group);
             button_done=1;
+            next_state = GROUP;
         }
         else if(select!=0)
         {
